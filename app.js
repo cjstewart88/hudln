@@ -28,10 +28,14 @@ app.listen(8080);
 
 var io = io.listen(app);
 
+var clients = [];
+
 io.sockets.on('connection', function (client) {
-  client.on('message', function (message) {
-    client.broadcast.send('message');
-    client.send('message');
-  }); 
+  
+  var clientId = clients.length;
+  clients.push([clientId,0,0]);
+  client.broadcast.emit('newClient', { client: clients[clientId] });
+  client.emit('currentClients', { clientId: clientId, clients: clients });
+  
 });
 
