@@ -7,7 +7,6 @@
 	socket.on('connect', function() {
 		socket.emit('message', { event: 'initial', message: 'boo!' });
 		socket.on('message', function (newMessage) {
-  	  alert('');
   	  $('body').append(newMessage)
   	});
 	});

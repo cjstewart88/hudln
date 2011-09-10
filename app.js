@@ -30,6 +30,7 @@ var io = io.listen(app);
 
 io.sockets.on('connection', function (client) {
   client.on('message', function (message) {
+    client.broadcast.send('message');
     client.send('message');
   }); 
 });
