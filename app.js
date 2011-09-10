@@ -1,6 +1,7 @@
 var sys = require('sys');
 var express = require('express');
 var io = require('socket.io');
+var util = require('util');
 
 var app = express.createServer();
 
@@ -25,10 +26,11 @@ app.get('/', function(req, res) {
 
 app.listen(8080);
 
-var socket = io.listen(app);
+var io = io.listen(app);
 
-socket.on('connection', function (client) {
-    client.on('message', function (message) {
-        socket.broadcast(message);
-    });
+io.sockets.on('connection', function (client) {
+  client.on('message', function (message) {
+    client.send('message');
+  }); 
 });
+

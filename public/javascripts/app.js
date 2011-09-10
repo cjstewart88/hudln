@@ -5,17 +5,16 @@
   //var socket = new io.Socket(null, {rememberTransport: false, port: 8080});
 	
 	socket.on('connect', function() {
-		socket.emit('initial', { event: 'initial', message: 'boo!' });
+		socket.emit('message', { event: 'initial', message: 'boo!' });
+		socket.on('message', function (newMessage) {
+  	  alert('');
+  	  $('body').append(newMessage)
+  	});
 	});
-
-	socket.on('message', function (newMessage) {
-	  $('body').append(newMessage)
-	});
-	  
+  
 	$(document).ready(function(){
 		$(".sendMsg").click(function(){
-			socket.send('testing');
+			socket.send('message', { data: 'stuff'} );
 		});  
 	})
-  
 })();
