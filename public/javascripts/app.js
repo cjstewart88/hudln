@@ -8,8 +8,8 @@
 		socket.emit('initial', { event: 'initial', message: 'boo!' });
 	});
 
-	socket.on('newMessage', function (newMessage) {
-	  $('body').append(newMessage.message)
+	socket.on('message', function (newMessage) {
+	  $('body').append(newMessage)
 	});
 	  
 	$(document).ready(function(){
