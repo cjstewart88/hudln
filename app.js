@@ -37,5 +37,11 @@ io.sockets.on('connection', function (client) {
   client.broadcast.emit('newClient', { client: clients[clientId] });
   client.emit('currentClients', { clientId: clientId, clients: clients });
   
+  client.on('moveClient', function(data) {
+    clients[data.clientId] = [data.clientId, data.clientX, data.clientY];
+    client.broadcast.emit('updateClientPosition', { clientId: data.clientId, clientX: data.clientX, clientY: data.clientY });
+    client.emit('updateClientPosition', { clientId: data.clientId, clientX: data.clientX, clientY: data.clientY });
+  });
+  
 });
 
