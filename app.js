@@ -30,6 +30,11 @@ app.listen(port);
 
 var io = io.listen(app);
 
+io.configure(function () { 
+  io.set("transports", ["xhr-polling"]); 
+  io.set("polling duration", 10); 
+});
+
 var clients = {};
 
 io.sockets.on('connection', function (client) {
