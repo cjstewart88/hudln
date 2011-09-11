@@ -35,10 +35,6 @@
   
 	$(document).ready(function () { 	
     
-    $(window).unload(function () { 
-      socket.emit('disconnect'); 
-    });
-    
   	$(document).keydown(function (e) {
   	  console.log("uhhh");
   	    var oldX = myX;
