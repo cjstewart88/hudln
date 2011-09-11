@@ -42,28 +42,30 @@
   }
   
 	$(document).ready(function () { 
-  	$(document).keydown(function (e) {
+  	$(document).keydown(function (event) {
   	    var numOfSteps  = 10;
   	    var oldX        = myX;
   	    var oldY        = myY;
   	    
-        switch (e.keyCode) {
+        switch (event.keyCode) {
           case 37: // left
             if (myX-numOfSteps >= 0) { myX -= numOfSteps; }
             break;
           case 39: // right
+            if (myX+numOfSteps >= realmDimensions[0]) { realmDimensions[0] += 50; }
             myX += numOfSteps;
             break;
           case 38: // up
             if (myY-numOfSteps >= 0) { myY -= numOfSteps; } 
             break;
           case 40: // down
+            if (myY+numOfSteps >= realmDimensions[1]) { realmDimensions[1] += 50; }
             myY += numOfSteps;
             break;
         }
         
         if (oldX != myX || oldY != myY) {
-          socket.emit('moveClient', { clientId: myClientId, clientX: myX, clientY: myY } );
+          socket.emit('moveClient', { clientId: myClientId, clientX: myX, clientY: myY, realmDimensions: realmDimensions } );
         }
       });
 	});
