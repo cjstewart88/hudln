@@ -30,12 +30,27 @@
 	$(document).ready(function (){ 	
     
   	$(document).keydown(function (e) {
-        if(e.keyCode == 37) { myX--; } // left
-        if(e.keyCode == 39) { myX++; } // right
-        if(e.keyCode == 38) { myY--; } // up
-        if(e.keyCode == 40) { myY++; } // down
+  	    var oldX = myX;
+  	    var oldY = myY;
+  	    
+        switch (e.keyCode) {
+          case 37: // left
+            if (myX-1 >= 0) { myX--; }
+            break;
+          case 39: // right
+            myX++;
+            break;
+          case 38: // up
+            if (myY-1 >= 0) { myY--; } 
+            break;
+          case 40: // down
+            myY++;
+            break;
+        }
         
-        socket.emit('moveClient', { clientId: myClientId, clientX: myX, clientY: myY } );
+        if (oldX != myX || oldY != myY) {
+          socket.emit('moveClient', { clientId: myClientId, clientX: myX, clientY: myY } );
+        }
       });
 		
 	});
