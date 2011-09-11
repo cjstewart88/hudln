@@ -24,7 +24,9 @@ app.get('/', function(req, res) {
   res.render('index');
 });
 
-app.listen(34009);
+var port = process.env.PORT || 3000;
+
+app.listen(port);
 
 var io = io.listen(app);
 
