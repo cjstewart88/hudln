@@ -2,7 +2,7 @@
 
 	var socket = io.connect(null);
 	
-	var clients = [];
+	var clients = {};
 	
 	var myClientId;
 	var myX = 0;
@@ -10,26 +10,37 @@
 	
 	socket.on('connect', function () {
 	  socket.on('currentClients', function (data) {
+      myClientId = data.clientId;
 	    clients = data.clients;
-	    myClientId = data.clientId;
-      $.each(clients, function() {
-        $('body').append('<div id="'+this[0]+'" style="top: '+this[1]+'; left: '+this[2]+'"></div>');
+      $.each(clients, function(client) {
+        $('body').append('<div id="'+client+'" style="top: '+clients[client][1]+'; left: '+clients[client][0]+'"></div>');
       });
 	  });
 	  
   	socket.on('newClient', function (data) {
-  	  $('body').append('<div id="'+data.client[0]+'" style="top: '+data.client[1]+'; left: '+data.client[2]+'"></div>');
+  	  $('body').append('<div id="'+data.clientId+'" style="top: '+0+'; left: '+0+'"></div>');
   	});
   	
   	socket.on('updateClientPosition',function (data) {
-  	  clients[data.clientId] = [data.clientId, data.clientX, data.clientY];
-  	  $('body').find('#'+data.clientId).css({ 'top': data.clientY, 'left': data.clientX })
+  	  if (!data.deleteClient) {
+  	    clients[data.clientId] = [data.clientId, data.clientX, data.clientY];
+  	    $('body').find('#'+data.clientId).css({ 'top': data.clientY, 'left': data.clientX });
+  	  }
+  	  else {
+  	    clients[data.clientId] = null;
+  	    $('body').find('#'+data.clientId).remove();
+  	  }
   	});
 	});
   
-	$(document).ready(function (){ 	
+	$(document).ready(function () { 	
+    
+    $(window).unload(function () { 
+      socket.emit('disconnect'); 
+    });
     
   	$(document).keydown(function (e) {
+  	  console.log("uhhh");
   	    var oldX = myX;
   	    var oldY = myY;
   	    

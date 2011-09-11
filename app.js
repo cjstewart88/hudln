@@ -30,19 +30,23 @@ app.listen(port);
 
 var io = io.listen(app);
 
-var clients = [];
+var clients = {};
 
 io.sockets.on('connection', function (client) {
-  
-  var clientId = clients.length;
-  clients.push([clientId,0,0]);
-  client.broadcast.emit('newClient', { client: clients[clientId] });
+  var clientId = client["id"];
+  clients[clientId] = [0,0];
+  client.broadcast.emit('newClient', { clientId: clientId });
   client.emit('currentClients', { clientId: clientId, clients: clients });
   
-  client.on('moveClient', function(data) {
-    clients[data.clientId] = [data.clientId, data.clientX, data.clientY];
-    client.broadcast.emit('updateClientPosition', { clientId: data.clientId, clientX: data.clientX, clientY: data.clientY });
-    client.emit('updateClientPosition', { clientId: data.clientId, clientX: data.clientX, clientY: data.clientY });
+  client.on('moveClient', function (data) {
+    clients[clientId] = [data.clientX, data.clientY];
+    client.broadcast.emit('updateClientPosition', { clientId: clientId, clientX: data.clientX, clientY: data.clientY });
+    client.emit('updateClientPosition', { clientId: clientId, clientX: data.clientX, clientY: data.clientY });
+  });
+  
+  client.on('disconnect', function () {
+    delete clients[clientId];
+    client.broadcast.emit('updateClientPosition', { clientId: clientId, deleteClient: true });
   });
   
 });
