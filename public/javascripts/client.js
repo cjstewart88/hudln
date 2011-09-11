@@ -1,5 +1,4 @@
 (function() {
-
 	var socket = io.connect(null);
 	
 	var clients = {};
@@ -33,8 +32,7 @@
   	});
 	});
   
-	$(document).ready(function () { 	
-    
+	$(document).ready(function () { 
   	$(document).keydown(function (e) {
   	  console.log("uhhh");
   	    var oldX = myX;
@@ -59,7 +57,5 @@
           socket.emit('moveClient', { clientId: myClientId, clientX: myX, clientY: myY } );
         }
       });
-		
 	});
-	
 })();
