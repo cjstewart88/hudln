@@ -1,0 +1,8 @@
+body{ overflow: auto; }
+div {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border: solid 3px black;
+  position: absolute;
+}
