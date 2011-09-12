@@ -8,6 +8,8 @@
 	var myClientId      = 0;
 	var myX             = 0;
 	var myY             = 0;
+	var oldX            = 0;
+	var oldY            = 0;
 	
 	var windowWidth     = 0;
 	var windowHeight    = 0;
@@ -32,13 +34,17 @@
 	});
   
   function scrollRealm () {
-    if (myX >= leftOffset-200) { 
-      $('html, body').animate({ scrollLeft: leftOffset-250 }, 2000); 
-      leftOffset += windowWidth-250; 
+    if (myX > oldX || myY > oldY) { // scrolling if the user is moving right or down
+      if (myX >= leftOffset-50) { 
+        $('html, body').animate({ scrollLeft: leftOffset-400 }, 2000); 
+        leftOffset += windowWidth-400; 
+      }
+      if (myY >= topOffset-50) { 
+        $('html, body').animate({ scrollTop: topOffset-200 }, 2000); 
+        topOffset += windowHeight-200; 
+      }
     }
-    if (myY >= topOffset-200) { 
-      $('html, body').animate({ scrollTop: topOffset-250 }, 2000); 
-      topOffset += windowHeight-250; 
+    else { // scrolling if th user is moving left or up
     }
   }
   
@@ -49,9 +55,8 @@
     // adjust the canvas aka realm to its actual live dimensions
     realm.width   = realmDimensions[0];
     realm.height  = realmDimensions[1];
-	  windowWidth         = $(window).width();
-	  windowHeight        = $(window).height();
-  
+    $('#realm').css({ 'margin-right': windowWidth+'px','margin-bottom': windowHeight+'px' });
+    
     // plot the currently connected clients
     $.each(clients, function (client) {
       var realm_context = realm.getContext('2d');
@@ -74,8 +79,11 @@
   	$(document).keydown(function (event) {
   	    var keyPressed  = event.keyCode;
   	    var numOfSteps  = 10;
-  	    var oldX        = myX;
-  	    var oldY        = myY;
+  	    var explore     = 200;  /*  Number of pixels the user has to be before he/she 
+  	                                explores new parts of the realm. Also how much(in pixels)
+  	                                the user explores. */
+  	    oldX            = myX;
+  	    oldY            = myY;
         
         if (keyPressed >= 37 && keyPressed <= 40) event.preventDefault();
         
@@ -83,14 +91,14 @@
           if (myX-numOfSteps >= 0) { myX -= numOfSteps; } 
         }
         else if (keyPressed == 39) { // right
-          if (myX+numOfSteps >= realmDimensions[0]) { realmDimensions[0] += 150; } 
+          if (myX+explore >= realmDimensions[0]) { realmDimensions[0] += explore; } 
           myX += numOfSteps;
         }
         else if (keyPressed == 38) { // up
           if (myY-numOfSteps >= 0) { myY -= numOfSteps; } 
         }
         else if (keyPressed == 40) { // down
-          if (myY+numOfSteps >= realmDimensions[1]) { realmDimensions[1] += 150; }
+          if (myY+explore >= realmDimensions[1]) { realmDimensions[1] += explore; }
           myY += numOfSteps;
         }
                 
@@ -99,4 +107,6 @@
         }
       });
 	});
+	
+	$(document).mousewheel(function(event) { event.preventDefault(); });
 })();
