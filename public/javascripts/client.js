@@ -1,7 +1,6 @@
 (function() {
 	var socket          = io.connect(null);
 	
-	var clientsView     = {};
 	var realm           = document.getElementById("realm");
 	
 	var myClientId      = 0;
@@ -10,24 +9,22 @@
 	
 	socket.on('connect', function () {
 	  socket.on('init', function (data) {
-	    clientsView     = data.clientsView;
-      myClientId      = data.clientId;
-	    
-	    drawRealm();
+      myClientId = data.clientId;
+	    drawRealm(data.clientsView);
 	  });
 	  
 	  socket.on('drawRealm', function (data) {
-	    clientsView     = data.clientsView;
-	    
-	    drawRealm();
+	    drawRealm(data.clientsView);
 	  });
 	});
   
-  function drawRealm () {
+  function drawRealm (clientsView) {
     // clear the canvas for redrawing
     realm.width   = realm.height = 0;
     realm.width   = 800; 
     realm.height  = 600;
+    
+    var clientsView = clientsView;
     
     // plot the currently connected clients
     $.each(clientsView, function (client) {
