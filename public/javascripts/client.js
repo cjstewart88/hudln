@@ -24,9 +24,10 @@
     realm.width   = 800; 
     realm.height  = 600;
     
+    // all the data the client can see
     var clientsView = clientsView;
     
-    // plot the currently connected clients
+    // draw all the data in the clients range
     $.each(clientsView, function (client) {
       var realm_context = realm.getContext('2d');
       realm_context.fillRect(clientsView[client][0], clientsView[client][1], 16, 16);
@@ -34,7 +35,7 @@
   }
   
 	$(document).ready(function () { 
-	  // Movement
+	  // Client Movement
   	$(document).keydown(function (event) {
   	  var keyPressed = event.keyCode;
   	     
@@ -43,7 +44,8 @@
       else if (keyPressed == 38)  myY -= 10; //up
       else if (keyPressed == 40)  myY += 10; //down
                     
-      // if the key pressed is any of the arrow keys the user is moving, send the new position    
+      // if the key pressed is any of the arrow keys the user is 
+      // moving, send the new position and prevent scrolling with the arrow keys   
       if (keyPressed >= 37 && keyPressed <= 40) { 
         event.preventDefault();
         socket.emit('moveClient', { clientX: myX, clientY: myY } );
