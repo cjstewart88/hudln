@@ -51,7 +51,7 @@
       }
       realm_context.fillRect(plotX, plotY, 10, 10);
     
-      console.log("plotX: " + plotX + " plotY: "+ plotY);
+      // console.log("plotX: " + plotX + " plotY: "+ plotY);
     });
   }
   
