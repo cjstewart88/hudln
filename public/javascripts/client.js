@@ -33,10 +33,12 @@
       var plotX = 0;
       var plotY = 0;
       if (client == myClientId) {
+        realm_context.fillStyle = 'rgb(0,0,0)';
         plotX = 400;
         plotY = 300;
       }
       else {
+        realm_context.fillStyle = 'rgb(255,0,0)';
         // myX = 2000 
         // myY = 3000
         // some random player's X = 1500
@@ -44,10 +46,12 @@
         plotX = myX-clientsView[client][0]; // 500
         plotY = myY-clientsView[client][1]; // 500
         
-        plotX -= 400;
-        plotY -= 300;
+        plotX = (plotX-400)*-1;
+        plotY = (plotY-300)*-1;
       }
       realm_context.fillRect(plotX, plotY, 10, 10);
+    
+      console.log("plotX: " + plotX + " plotY: "+ plotY);
     });
   }
   
