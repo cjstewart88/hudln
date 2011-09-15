@@ -25,8 +25,8 @@
   function drawRealm () {
     // clear the canvas for redrawing
     realm.width   = realm.height = 0;
-    realm.width   = 800; 
-    realm.height  = 600;
+    realm.width   = 810; 
+    realm.height  = 610;
         
     // draw all the data in the clients range
     $.each(clients, function (client) {
@@ -36,16 +36,16 @@
       realm_context.fillStyle = 'rgb(0,0,0)';
       // draw realm boundaries 
       if (myY <= 300) {
-        realm_context.fillRect(-5,-5,805,300-myY);
+        realm_context.fillRect(0 ,0, 810, 300-myY);
       }
       if (myX <= 800) {
-        realm_context.fillRect(-5,-5,400-myX,605);
+        realm_context.fillRect(0, 0, 400-myX, 610);
       }
       if (myY >= 2500) {
-        realm_context.fillRect(-5,(3310-myY)-5,805,300); 
+        realm_context.fillRect(0, 3310-myY, 810, 300); 
       }
       if (myX >= 3500) {
-        realm_context.fillRect((4410-myX)-5,-5,400,605);
+        realm_context.fillRect(4410-myX, 0, 400, 610);
       }
       
       if (client == myClientId) {
@@ -66,7 +66,7 @@
         plotY = (plotY-300)*-1;
       }
       
-      realm_context.fillRect(plotX-5, plotY-5, 10, 10);
+      realm_context.fillRect(plotX, plotY, 10, 10);
     });
   }
   
