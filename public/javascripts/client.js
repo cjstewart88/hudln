@@ -30,7 +30,6 @@
         
     // draw all the data in the clients range
     $.each(clients, function (client) {
-      
       // draw realm boundaries
       realm_context.fillStyle = 'rgb(0,0,0)';
       if (myY <= 300)   realm_context.fillRect(0 ,0, 810, 300-myY);
