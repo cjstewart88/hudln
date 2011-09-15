@@ -30,24 +30,17 @@
         
     // draw all the data in the clients range
     $.each(clients, function (client) {
+      
+      // draw realm boundaries
+      realm_context.fillStyle = 'rgb(0,0,0)';
+      if (myY <= 300)   realm_context.fillRect(0 ,0, 810, 300-myY);
+      if (myX <= 800)   realm_context.fillRect(0, 0, 400-myX, 610);
+      if (myY >= 2500)  realm_context.fillRect(0, 3310-myY, 810, 300); 
+      if (myX >= 3500)  realm_context.fillRect(4410-myX, 0, 400, 610);
+      
+      // draw clients
       var plotX = 0;
       var plotY = 0;
-      
-      realm_context.fillStyle = 'rgb(0,0,0)';
-      // draw realm boundaries 
-      if (myY <= 300) {
-        realm_context.fillRect(0 ,0, 810, 300-myY);
-      }
-      if (myX <= 800) {
-        realm_context.fillRect(0, 0, 400-myX, 610);
-      }
-      if (myY >= 2500) {
-        realm_context.fillRect(0, 3310-myY, 810, 300); 
-      }
-      if (myX >= 3500) {
-        realm_context.fillRect(4410-myX, 0, 400, 610);
-      }
-      
       if (client == myClientId) {
         realm_context.fillStyle = 'rgb(255,0,0)';
         plotX = 400;
@@ -55,8 +48,7 @@
       }
       else {
         realm_context.fillStyle = 'rgb(255,255,0)';
-        // myX = 2000 
-        // myY = 3000
+        // myX = 2000  myY = 3000
         // some random player's X = 1500
         // some random player's  Y = 2500
         plotX = myX-clients[client][0]; // 500
