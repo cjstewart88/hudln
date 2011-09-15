@@ -67,10 +67,10 @@
   	$(document).keydown(function (event) {
   	  var keyPressed = event.keyCode;
   	     
-      if      (keyPressed == 37)  { if (myX-100 >= 0)      { myX -= 100; } } //left
-      else if (keyPressed == 39)  { if (myX+100 <= 4000)    { myX += 100; } } //right
-      else if (keyPressed == 38)  { if (myY-100 >= 0)      { myY -= 100; } } //up
-      else if (keyPressed == 40)  { if (myY+100 <= 3000)    { myY += 100; } } //down
+      if      (keyPressed == 37)  { if (myX-100 >= 0)     { myX -= 100; } } //left
+      else if (keyPressed == 39)  { if (myX+100 <= 4000)  { myX += 100; } } //right
+      else if (keyPressed == 38)  { if (myY-100 >= 0)     { myY -= 100; } } //up
+      else if (keyPressed == 40)  { if (myY+100 <= 3000)  { myY += 100; } } //down
                     
       // if the key pressed is any of the arrow keys the user is 
       // moving, send the new position and prevent scrolling with the arrow keys   
