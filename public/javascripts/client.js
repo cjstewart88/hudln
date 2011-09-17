@@ -6,23 +6,43 @@
 	var clients         = {};
 	
 	var myClientId      = 0;
-	var myX             = 0;
-	var myY             = 0;
 	
 	socket.on('connect', function () {
-	  socket.on('init',function(data){
+	  socket.on('init', function (data) {
 	    myClientId  = data.clientId;
-  	  clients     = data.clients;
+  	  clients     = data.initClientList;
 	    drawRealm();
 	  });
 	  
-	  socket.on('drawRealm', function (data) {
-	    clients     = data.clients;
+	  socket.on('clientConnected', function (data) {
+	    clients[data.clientId] = [data.x, data.y];
+	    drawRealm();
+	  });
+	  	  
+	  socket.on('clientMoved', function (data) {
+	    clientThatMoved = data;
+	    
+	    if      (clientThatMoved.direction == "left")  clients[clientThatMoved.clientId][0] = clients[clientThatMoved.clientId][0]-100;
+      else if (clientThatMoved.direction == "right") clients[clientThatMoved.clientId][0] = clients[clientThatMoved.clientId][0]+100;
+      else if (clientThatMoved.direction == "up")    clients[clientThatMoved.clientId][1] = clients[clientThatMoved.clientId][1]-100;
+      else if (clientThatMoved.direction == "down")  clients[clientThatMoved.clientId][1] = clients[clientThatMoved.clientId][1]+100;
+      
+	    drawRealm();
+	  });
+	  
+	  socket.on('clientDisconnected', function (data) {
+	    delete client[data.clientId];
+	    
 	    drawRealm();
 	  });
 	});
   
   function drawRealm () {
+    console.log(clients);
+    // my cords
+    var myX = clients[myClientId][0];
+    var myY = clients[myClientId][1];
+    
     // clear the canvas for redrawing
     realm.width   = realm.height = 0;
     realm.width   = 810; 
@@ -64,18 +84,19 @@
 	$(document).ready(function () { 
 	  // Client Movement
   	$(document).keydown(function (event) {
-  	  var keyPressed = event.keyCode;
+  	  var keyPressed  = event.keyCode;
+  	  var direction   = null;
   	     
-      if      (keyPressed == 37)  { if (myX-100 >= 0)     { myX -= 100; } } //left
-      else if (keyPressed == 39)  { if (myX+100 <= 4000)  { myX += 100; } } //right
-      else if (keyPressed == 38)  { if (myY-100 >= 0)     { myY -= 100; } } //up
-      else if (keyPressed == 40)  { if (myY+100 <= 3000)  { myY += 100; } } //down
+      if      (keyPressed == 37)  direction = "left";
+      else if (keyPressed == 39)  direction = "right";
+      else if (keyPressed == 38)  direction = "up";
+      else if (keyPressed == 40)  direction = "down";
                     
       // if the key pressed is any of the arrow keys the user is 
       // moving, send the new position and prevent scrolling with the arrow keys   
-      if (keyPressed >= 37 && keyPressed <= 40) { 
+      if (direction) { 
         event.preventDefault();
-        socket.emit('moveClient', { clientX: myX, clientY: myY } );
+        socket.emit('requestToMoveClient', { direction: direction } );
       }
 	  });
 	});
