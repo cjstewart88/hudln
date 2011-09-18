@@ -31,7 +31,7 @@
 	  });
 	  
 	  socket.on('clientDisconnected', function (data) {
-	    delete client[data.clientId];
+	    delete clients[data.clientId];
 	    
 	    drawRealm();
 	  });
