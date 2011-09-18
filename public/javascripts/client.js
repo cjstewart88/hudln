@@ -38,7 +38,6 @@
 	});
   
   function drawRealm () {
-    console.log(clients);
     // my cords
     var myX = clients[myClientId][0];
     var myY = clients[myClientId][1];
