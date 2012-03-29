@@ -2,8 +2,9 @@
 	"name": "game",
 	"version": "0.0.1",
 	"dependencies": {
-		"express": "2.4.6",
-		"socket.io": "0.8.4",
-		"redis": "0.6.7"
+		"express":          "*",
+		"socket.io":        "*",
+		"socket.io-client": "*",
+		"redis":            "*"
 	}
 }
