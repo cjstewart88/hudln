@@ -1,10 +1,17 @@
 {
-	"name": "hudln",
-	"version": "0.0.1",
-	"dependencies": {
-		"express":          "*",
-		"socket.io":        "*",
-		"socket.io-client": "*",
-		"redis":            "*"
-	}
+  "name": "hudln",
+  "version": "0.0.1",
+  "dependencies": {
+    "express": "*",
+    "socket.io": "*",
+    "socket.io-client": "*",
+    "redis": "*"
+  },
+  "subdomain": "hudln",
+  "scripts": {
+    "start": "server.js"
+  },
+  "engines": {
+    "node": "0.6.x"
+  }
 }
