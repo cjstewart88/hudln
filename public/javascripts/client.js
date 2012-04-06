@@ -5,22 +5,22 @@
   var realm_context   = realm.getContext('2d');
 	var clients         = {};
 
-	var myClientId      = 0;
+	var my_client_id     = 0;
 
 	socket.on('connect', function () {
 	  socket.on('init', function (data) {
-	    myClientId  = data.clientId;
-  	  clients     = data.initClientList;
-	    drawRealm();
+	    my_client_id = data.client_id;
+  	  clients     = data.init_client_list;
+	    draw_realm();
 	  });
 
-	  socket.on('clientConnected', function (data) {
-	    clients[data.clientId] = [data.x, data.y, 23, 64];
-	    drawRealm();
+	  socket.on('client_connected', function (data) {
+	    clients[data.client_id] = [data.x, data.y, 23, 64];
+	    draw_realm();
 	  });
 
-	  socket.on('clientMoved', function (data) {
-	    who				= data.clientId;
+	  socket.on('client_moved', function (data) {
+	    who				= data.client_id;
 			direction = data.direction;
 
 	    if (direction == "left") {
@@ -42,19 +42,19 @@
 
       (clients[who][2]+23 <= 46 ? clients[who][2] += 24 : clients[who][2] = 0);
 
-	    drawRealm();
+	    draw_realm();
 	  });
 
-	  socket.on('clientDisconnected', function (data) {
-	    delete clients[data.clientId];
-	    drawRealm();
+	  socket.on('client_disconnected', function (data) {
+	    delete clients[data.client_id];
+	    draw_realm();
 	  });
 	});
 
-  function drawRealm () {
+  function draw_realm () {
     // my cords
-    var myX = clients[myClientId][0];
-    var myY = clients[myClientId][1];
+    var my_x = clients[my_client_id][0];
+    var my_y = clients[my_client_id][1];
 
     // clear the canvas for redrawing
     realm.width   = realm.height = 0;
@@ -63,10 +63,10 @@
 
 		// draw realm boundaries if players anywhere near them
 		realm_context.fillStyle = 'rgb(0,0,0)';
-		if (myY <= 300)   realm_context.fillRect(0 ,0, 825, 300-myY);
-		if (myX <= 800)   realm_context.fillRect(0, 0, 400-myX, 632);
-		if (myY >= 2500)  realm_context.fillRect(0, 3325-myY, 825, 300); 
-		if (myX >= 3500)  realm_context.fillRect(4432-myX, 0, 400, 632);
+		if (my_y <= 300)   realm_context.fillRect(0 ,0, 825, 300-my_y);
+		if (my_x <= 800)   realm_context.fillRect(0, 0, 400-my_x, 632);
+		if (my_y >= 2500)  realm_context.fillRect(0, 3325-my_y, 825, 300); 
+		if (my_x >= 3500)  realm_context.fillRect(4432-my_x, 0, 400, 632);
 		
     var character = new Image();
     character.src = "images/char3.png";
@@ -75,21 +75,21 @@
       // draw all the data in the clients range
       $.each(clients, function (client) {
         // draw clients
-        if (client == myClientId) {
+        if (client == my_client_id) {
           realm_context.fillStyle = 'rgb(255,0,0)';
-          plotX = 400;
-          plotY = 300;
+          plot_x = 400;
+          plot_y = 300;
         }
         else {
           realm_context.fillStyle = 'rgb(255,255,0)';
-          plotX = myX-clients[client][0];
-          plotY = myY-clients[client][1];
+          plot_x = my_x-clients[client][0];
+          plot_y = my_y-clients[client][1];
 
-          plotX = (plotX-400)*-1;
-          plotY = (plotY-300)*-1;
+          plot_x = (plot_x-400)*-1;
+          plot_y = (plot_y-300)*-1;
         }
         
-        realm_context.drawImage(character, clients[client][2], clients[client][3], 25, 32, plotX, plotY, 24, 32);
+        realm_context.drawImage(character, clients[client][2], clients[client][3], 25, 32, plot_x, plot_y, 24, 32);
       });
     };
   }
@@ -106,7 +106,7 @@
       // moving, send the new position and prevent scrolling with the arrow keys   
       if (direction) { 
         event.preventDefault();
-        socket.emit('requestToMoveClient', { direction: direction } );
+        socket.emit('request_to_move_client', { direction: direction } );
       }
 	  });
 	});
