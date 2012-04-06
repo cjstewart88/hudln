@@ -51,6 +51,9 @@
 	  });
 	});
 
+  var character = new Image();
+  character.src = "images/char3.png";
+
   function draw_realm () {
     // my cords
     var my_x = clients[my_client_id][0];
@@ -68,30 +71,25 @@
 		if (my_y >= 2500)  realm_context.fillRect(0, 3325-my_y, 825, 300); 
 		if (my_x >= 3500)  realm_context.fillRect(4432-my_x, 0, 400, 632);
 		
-    var character = new Image();
-    character.src = "images/char3.png";
-    
-    character.onload = function() {
-      // draw all the data in the clients range
-      $.each(clients, function (client) {
-        // draw clients
-        if (client == my_client_id) {
-          realm_context.fillStyle = 'rgb(255,0,0)';
-          plot_x = 400;
-          plot_y = 300;
-        }
-        else {
-          realm_context.fillStyle = 'rgb(255,255,0)';
-          plot_x = my_x-clients[client][0];
-          plot_y = my_y-clients[client][1];
+    // draw all the data in the clients range
+    $.each(clients, function (client) {
+      // draw clients
+      if (client == my_client_id) {
+        realm_context.fillStyle = 'rgb(255,0,0)';
+        plot_x = 400;
+        plot_y = 300;
+      }
+      else {
+        realm_context.fillStyle = 'rgb(255,255,0)';
+        plot_x = my_x-clients[client][0];
+        plot_y = my_y-clients[client][1];
 
-          plot_x = (plot_x-400)*-1;
-          plot_y = (plot_y-300)*-1;
-        }
-        
-        realm_context.drawImage(character, clients[client][2], clients[client][3], 25, 32, plot_x, plot_y, 24, 32);
-      });
-    };
+        plot_x = (plot_x-400)*-1;
+        plot_y = (plot_y-300)*-1;
+      }
+      
+      realm_context.drawImage(character, clients[client][2], clients[client][3], 25, 32, plot_x, plot_y, 24, 32);
+    });
   }
   
 	$(document).ready(function () { 
