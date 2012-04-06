@@ -5,12 +5,12 @@
   var realm_context   = realm.getContext('2d');
 	var clients         = {};
 
-	var my_client_id     = 0;
+	var my_client_id    = 0;
 
 	socket.on('connect', function () {
 	  socket.on('init', function (data) {
-	    my_client_id = data.client_id;
-  	  clients     = data.init_client_list;
+	    my_client_id  = data.client_id;
+  	  clients       = data.init_client_list;
 	    draw_realm();
 	  });
 
@@ -20,29 +20,8 @@
 	  });
 
 	  socket.on('client_moved', function (data) {
-	    who				= data.client_id;
-			direction = data.direction;
-
-	    if (direction == "left") {
-				clients[who][0] = clients[who][0]-10;
-				clients[who][3] = 96;
-      } 
-			else if (direction == "right") {
-				clients[who][0] = clients[who][0]+10;
-				clients[who][3] = 32;
-      } 
-			else if (direction == "up") {
-				clients[who][1] = clients[who][1]-10;
-				clients[who][3] = 0;
-      } 
-			else if (direction == "down") {
-				clients[who][1] = clients[who][1]+10;
-				clients[who][3] = 64;
-      }
-
-      (clients[who][2]+23 <= 46 ? clients[who][2] += 24 : clients[who][2] = 0);
-
-	    draw_realm();
+	    console.log(data);
+      save_move_locally(data.client_id, data.direction, data.new_value);
 	  });
 
 	  socket.on('client_disconnected', function (data) {
@@ -50,6 +29,29 @@
 	    draw_realm();
 	  });
 	});
+
+  function save_move_locally (client_moving_id, direction, new_value) {
+    if (direction == "left") {
+			clients[client_moving_id][0] = new_value;
+			clients[client_moving_id][3] = 96;
+    } 
+		else if (direction == "right") {
+			clients[client_moving_id][0] = new_value;
+			clients[client_moving_id][3] = 32;
+    } 
+		else if (direction == "up") {
+			clients[client_moving_id][1] = new_value;
+			clients[client_moving_id][3] = 0;
+    } 
+		else if (direction == "down") {
+			clients[client_moving_id][1] = new_value;
+			clients[client_moving_id][3] = 64;
+    }
+    
+    (clients[client_moving_id][2]+23 <= 46 ? clients[client_moving_id][2] += 24 : clients[client_moving_id][2] = 0);
+
+    draw_realm();
+  }
 
   var character = new Image();
   character.src = "images/char3.png";
@@ -92,20 +94,35 @@
     });
   }
   
-	$(document).ready(function () { 
-	  // Client Movement
-  	$(document).keydown(function (e) {  	     
-      if      (e.keyCode == 37) direction = "left";
-      else if (e.keyCode == 39) direction = "right";
-      else if (e.keyCode == 38) direction = "up";
-      else if (e.keyCode == 40) direction = "down";
+  // Client Movement
+	$(document).keydown(function (e) {  	 
+	  var direction = null;
+	  
+    if      (e.keyCode == 37) direction = "left";
+    else if (e.keyCode == 39) direction = "right";
+    else if (e.keyCode == 38) direction = "up";
+    else if (e.keyCode == 40) direction = "down";
+    
+    // if a direction was set lets attempt to move the character
+    if (direction) { 
+      event.preventDefault();
+      
+      // attempt to move locally up front to reduce lag and to prevent sending a request to the serve if the upfront 
+      // check does not legitly pass
+      var new_value = null;
+            
+      if      (direction == "left"  && clients[my_client_id][0]-10 >= 0     && clients[my_client_id][0] != 0)     new_value = clients[my_client_id][0]-10
+      else if (direction == "right" && clients[my_client_id][0]+10 <= 4000  && clients[my_client_id][0] != 4000)  new_value = clients[my_client_id][0]+10
+      else if (direction == "up"    && clients[my_client_id][1]-10 >= 0     && clients[my_client_id][1] != 0)     new_value = clients[my_client_id][1]-10
+      else if (direction == "down"  && clients[my_client_id][1]+10 <= 3000  && clients[my_client_id][1] != 3000)  new_value = clients[my_client_id][1]+10
 
-      // if the key pressed is any of the arrow keys the user is 
-      // moving, send the new position and prevent scrolling with the arrow keys   
-      if (direction) { 
-        event.preventDefault();
-        socket.emit('request_to_move_client', { direction: direction } );
+      if (new_value != null) {
+        save_move_locally(my_client_id, direction, new_value);
+
+        // send the request to the server to prevent cheating if the user some how moved beyond the 
+        // realm's boundaries the server will pull them back
+        socket.emit('request_to_move_client', { direction: direction, new_value: new_value } );
       }
-	  });
-	});
+    }
+  });
 })();
