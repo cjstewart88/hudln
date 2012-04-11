@@ -1,6 +1,6 @@
 {
   "name": "hudln",
-  "version": "0.0.1-3",
+  "version": "0.0.1-12",
   "dependencies": {
     "express": "*",
     "socket.io": "*",
