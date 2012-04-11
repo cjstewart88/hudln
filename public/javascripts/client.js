@@ -20,7 +20,6 @@
 	  });
 
 	  socket.on('client_moved', function (data) {
-	    console.log(data);
       save_move_locally(data.client_id, data.direction, data.new_value);
 	  });
 
@@ -77,17 +76,12 @@
     $.each(clients, function (client) {
       // draw clients
       if (client == my_client_id) {
-        realm_context.fillStyle = 'rgb(255,0,0)';
         plot_x = 400;
         plot_y = 300;
       }
       else {
-        realm_context.fillStyle = 'rgb(255,255,0)';
-        plot_x = my_x-clients[client][0];
-        plot_y = my_y-clients[client][1];
-
-        plot_x = (plot_x-400)*-1;
-        plot_y = (plot_y-300)*-1;
+        plot_x = (my_x-clients[client][0]-400)*-1;
+        plot_y = (my_y-clients[client][1]-300)*-1;
       }
       
       realm_context.drawImage(character, clients[client][2], clients[client][3], 25, 32, plot_x, plot_y, 24, 32);
