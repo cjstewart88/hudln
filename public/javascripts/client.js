@@ -38,9 +38,7 @@
     } 
 		else if (direction == "up"    || direction == "down")   {
 			clients[client_moving_id][1] = new_value;
-    } 
-    
-    console.log("x: "+clients[client_moving_id][0]+" y: "+clients[client_moving_id][1]);
+    }
     
     draw_realm();
   }
@@ -113,10 +111,11 @@
     my_y = clients[my_client_id][1];
       
     $.each(realm_items_available_to_client, function () {
-      var dx = this.item_x - my_x;
-      var dy = this.item_y - my_y;
+      var dx    = this.item_x - (my_x + 5);
+      var dy    = this.item_y - (my_y + 5);
+      var dist  = Math.floor(Math.sqrt((dx * dx) + (dy * dy)));
       
-      if (dx * dx + dy * dy <= 25 * 25) {
+      if (dist <= 20 || dist == 21) {
         console.log("close to item");
       }
     });
