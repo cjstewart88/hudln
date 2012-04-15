@@ -2,10 +2,7 @@ var express = require('express');
 var io      = require('socket.io');
 var redis   = require('redis');
 
-var config = require('./config');
-
 var server  = express.createServer();
-var port    = process.env.PORT || 3000;
 
 server.configure(function() {
   server.set('view engine', 'html');
@@ -26,11 +23,13 @@ server.get('/', function(req, res) {
   res.render('index');
 });
 
-server.listen(port);
+server.listen(3000);
 
 /*    REDIS SERVER    */
-var redis_server = redis.createClient(config.prod_redis_port, config.prod_redis_server)
-redis_server.auth(config.prod_redis_key);
+var redis_port    = process.env.REDIS_PORT || 6379;
+var redis_host    = process.env.REDIS_HOST || '127.0.0.1';
+var redis_server  = redis.createClient(redis_port, redis_host);
+redis_server.auth(process.env.REDIS_KEY);
 
 /*    SOCKET.IO SHIT    */
 var io = io.listen(server);
