@@ -1,1 +1,17 @@
-canvas { display: block; margin: 0 auto; border: solid 1px #000; }
+#main {
+  margin: 0 auto;
+  width: 800px;
+}
+
+canvas { 
+  display: block; 
+  border: solid 1px #000; 
+}
+
+#hud {
+  
+}
+
+#resources-collected {
+  color: red;
+}
