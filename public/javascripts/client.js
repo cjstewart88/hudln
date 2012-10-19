@@ -7,6 +7,7 @@
     y:          0,
     sprite_sx:  23,
     sprite_sy:  64,
+    tick:       0,
     resources:  0
   };
   
@@ -59,23 +60,22 @@
 	  var key = e.keyCode;
 	   
 	  if (key == 32) {
-	    pickup_item(event);
+	    e.preventDefault();
+	    pickup_item();
 	  }
 	  else if (key == 37 || key == 39 || key == 38 || key == 40) {
+	    e.preventDefault();
 	    client_movement(key);
 	  }
   });
-  
+
   function pickup_item () {
-    event.preventDefault();
-    
     $.each(realm_items, function () {
       var dx    = this.item_x - (me.x + 5);
       var dy    = this.item_y - (me.y + 5);
       var dist  = Math.floor(Math.sqrt((dx * dx) + (dy * dy)));
-      
+
       if (dist <= 20 || dist == 21) {
-        console.log("close to item");
         delete this.item_id;
         delete this.item_x;
         delete this.item_y;
@@ -83,12 +83,13 @@
         update_hud('resources-collected', me.resources);
       }
     });
-    
+
     draw_realm();
   }
   
   function client_movement (key) {
-    event.preventDefault();
+    me.tick += 1;
+    if (me.tick%2 != 0) return;
     
     var direction = null;
 	  
