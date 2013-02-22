@@ -1,16 +1,17 @@
 (function() {
 	var realm        = document.getElementById("realm");
   var realmContext = realm.getContext('2d');
+  var realmItems   = [];
 
   var me = {
-    x:         0,
-    y:         0,
-    spriteSX:  23,
-    spriteSY:  64,
-    resources: 0
+    x:          0,
+    y:          0,
+    spriteSX:   23,
+    spriteSY:   64,
+    resources:  0
   };
 
-  var realm_items = generateItems();
+  generateItems(-400, 1200);
 
   var character = new Image();
   character.src = "images/char3.png";
@@ -23,19 +24,19 @@
     // my cords
     var myX = me.x;
     var myY = me.y;
-
+    console.log(myX, myY)
     // clear the canvas for redrawing
     realm.width   = realm.height = 0;
     realm.width   = 800;
-    realm.height  = 600;
+    realm.height  = 800;
 
     // draw yourself ... always in the center
-    realmContext.drawImage(character, me.spriteSX, me.spriteSY, 25, 32, 400, 300, 24, 32);
+    realmContext.drawImage(character, me.spriteSX, me.spriteSY, 25, 32, 400, 400, 24, 32);
 
     // draw all the client specific realm items
-    $.each(realm_items, function (item) {
-      itemX = (myX-this.itemX-400)*-1;
-      itemY = (myY-this.itemY-300)*-1;
+    $.each(realmItems, function (item) {
+      itemX = (myX-this.itemX)*-1;
+      itemY = (myY-this.itemY)*-1;
 
   		realmContext.fillStyle = 'rgb(234, 44, 70)';
   		realmContext.fillRect(itemX, itemY, 10, 10);
@@ -68,11 +69,11 @@
   });
 
   function pickupItem () {
-    $.each(realm_items, function () {
-      var dx    = this.itemX - (me.x + 5);
-      var dy    = this.itemY - (me.y + 5);
+    $.each(realmItems, function () {
+      var dx    = this.itemX - (me.x + 400);
+      var dy    = this.itemY - (me.y + 400);
       var dist  = Math.floor(Math.sqrt((dx * dx) + (dy * dy)));
-
+      
       if (dist <= 20 || dist == 21) {
         delete this.itemID;
         delete this.itemX;
@@ -110,20 +111,25 @@
       me.spriteSX = 0;
     }
 
+    // if (me.x != 0 && (me.x*-1)/400 % 1 === 0) {
+    //   console.log('new items between', 'x', me.x*2, 'y', me.y*2)
+    //   generateItems(me.x*2, me.y*2);
+    // } 
+    // else if (me.y != 0 && (me.y*-1)/400 % 1 === 0) {
+    //   console.log('new items between', 'x', me.x*2, 'y', me.y*2)
+    //   generateItems(me.x*2, me.y*2);
+    // }
+
     drawRealm()
   }
 
-  function generateItems () {
-    var generatedItems = [];
-
-    for (var i = 0; i < 100; i++) {
-      generatedItems.push({
-        itemID:  i,
-        itemX:   Math.floor(Math.random()*190)*10,
-        itemY:   Math.floor(Math.random()*190)*10
+  function generateItems (min, max) {
+    for (var i = 0; i < 30; i++) {
+      realmItems.push({
+        itemID:   i,
+        itemX:    Math.floor(Math.random() * (max - min) + min),
+        itemY:    Math.floor(Math.random() * (max - min) + min)
       })
     }
-
-    return generatedItems;
   }
 })();
