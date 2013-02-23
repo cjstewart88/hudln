@@ -1,7 +1,6 @@
 (function() {
 	var realm        = document.getElementById("realm");
   var realmContext = realm.getContext('2d');
-  var realmItems   = [];
 
   var me = {
     x:          0,
@@ -11,7 +10,15 @@
     resources:  0
   };
 
-  generateItems(-400, 1200);
+  var realmItems   = [];
+  var realmItemGenerationDetails = {
+    maxX: -400,
+    minX: 800,
+    maxY: -300,
+    minY: 600,
+    color: null
+  }
+  generateItems();
 
   var character = new Image();
   character.src = "images/char3.png";
@@ -28,17 +35,20 @@
     // clear the canvas for redrawing
     realm.width   = realm.height = 0;
     realm.width   = 800;
-    realm.height  = 800;
+    realm.height  = 600;
 
     // draw yourself ... always in the center
-    realmContext.drawImage(character, me.spriteSX, me.spriteSY, 25, 32, 400, 400, 24, 32);
+    realmContext.drawImage(character, me.spriteSX, me.spriteSY, 25, 32, 400, 300, 24, 32);
+
+    realmContext.fillStyle = 'rgb(0, 0, 0)';
+    realmContext.fillRect((myX-0)*-1, (myY-0)*-1, 10, 10);
 
     // draw all the client specific realm items
     $.each(realmItems, function (item) {
       itemX = (myX-this.itemX)*-1;
       itemY = (myY-this.itemY)*-1;
 
-  		realmContext.fillStyle = 'rgb(234, 44, 70)';
+  		realmContext.fillStyle = this.color;
   		realmContext.fillRect(itemX, itemY, 10, 10);
     });
   }
@@ -71,9 +81,9 @@
   function pickupItem () {
     $.each(realmItems, function () {
       var dx    = this.itemX - (me.x + 400);
-      var dy    = this.itemY - (me.y + 400);
+      var dy    = this.itemY - (me.y + 300);
       var dist  = Math.floor(Math.sqrt((dx * dx) + (dy * dy)));
-      
+
       if (dist <= 20 || dist == 21) {
         delete this.itemID;
         delete this.itemX;
@@ -111,24 +121,29 @@
       me.spriteSX = 0;
     }
 
-    // if (me.x != 0 && (me.x*-1)/400 % 1 === 0) {
-    //   console.log('new items between', 'x', me.x*2, 'y', me.y*2)
-    //   generateItems(me.x*2, me.y*2);
-    // } 
+    if (me.x != 0 && (me.x*-1)/800 % 1 === 0) {
+      realmItemGenerationDetails.maxX -= 1200
+      realmItemGenerationDetails.minX -= 1200
+      generateItems();
+      console.log('new items generated')
+      console.log(realmItemGenerationDetails)
+    }
     // else if (me.y != 0 && (me.y*-1)/400 % 1 === 0) {
-    //   console.log('new items between', 'x', me.x*2, 'y', me.y*2)
-    //   generateItems(me.x*2, me.y*2);
+    //   console.log('new items between', 'x', me.x-400, 'y', me.y)
+    //   generateItems(me.x-400, me.y);
     // }
 
     drawRealm()
   }
 
-  function generateItems (min, max) {
-    for (var i = 0; i < 30; i++) {
+  function generateItems () {
+    realmItemGenerationDetails.color = 'rgb(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')';
+    for (var i = 0; i < 500; i++) {
       realmItems.push({
         itemID:   i,
-        itemX:    Math.floor(Math.random() * (max - min) + min),
-        itemY:    Math.floor(Math.random() * (max - min) + min)
+        itemX:    Math.floor(Math.random() * (realmItemGenerationDetails.maxX - realmItemGenerationDetails.minX) + realmItemGenerationDetails.minX),
+        itemY:    Math.floor(Math.random() * (realmItemGenerationDetails.maxY - realmItemGenerationDetails.minY) + realmItemGenerationDetails.minY),
+        color:    realmItemGenerationDetails.color
       })
     }
   }
