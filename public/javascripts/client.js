@@ -42,7 +42,7 @@
         itemX = (myX-this.itemX)*-1;
         itemY = (myY-this.itemY)*-1;
 
-        realmContext.fillStyle = this.color;
+        realmContext.fillStyle = 'rgb(66, 219, 212)';
         realmContext.fillRect(itemX, itemY, 10, 10);
       });
     });
@@ -134,14 +134,12 @@
     };
 
     var minMax  = tileKey.split(' ');
-    var color   = 'rgb(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')';
 
-    for (var i = 0; i < 10; i++) {
+    for (var i = 0; i < 5; i++) {
       realmTiles[tileKey].items.push({
         itemID:   i,
         itemX:    Math.floor(Math.random() * (parseInt(minMax[1]) - parseInt(minMax[0])) + parseInt(minMax[0])),
-        itemY:    Math.floor(Math.random() * (parseInt(minMax[3]) - parseInt(minMax[2])) + parseInt(minMax[2])),
-        color:    color
+        itemY:    Math.floor(Math.random() * (parseInt(minMax[3]) - parseInt(minMax[2])) + parseInt(minMax[2]))
       });
     }
   }
@@ -158,90 +156,54 @@
     tileKey = topLeftPoint.x + ' ' + (topLeftPoint.x+800) + ' ' + topLeftPoint.y + ' ' + (topLeftPoint.y+600);
     if (realmTiles[tileKey] === undefined) {
       generateItems(tileKey);
-      console.log('center tile generated');
-    }
-    else {
-      console.log('center tile already generated');
     }
 
     // top center
     tileKey = topLeftPoint.x + ' ' + (topLeftPoint.x+800) + ' ' + (topLeftPoint.y-600) + ' ' + topLeftPoint.y;
     if (realmTiles[tileKey] === undefined) {
       generateItems(tileKey);
-      console.log('top center tile generated');
-    }
-    else {
-      console.log('top center tile already generated');
     }
 
     // top left
     tileKey = (topLeftPoint.x-800) + ' ' + topLeftPoint.x + ' ' + (topLeftPoint.y-600) + ' ' + topLeftPoint.y;
     if (realmTiles[tileKey] === undefined) {
       generateItems(tileKey);
-      console.log('top left tile generated');
-    }
-    else {
-      console.log('top left tile already generated');
     }
 
     // top right
     tileKey = (topLeftPoint.x+800) + ' ' + (topLeftPoint.x+800+800) + ' ' + (topLeftPoint.y-600) + ' ' + topLeftPoint.y;
     if (realmTiles[tileKey] === undefined) {
       generateItems(tileKey);
-      console.log('top right tile generated');
-    }
-    else {
-      console.log('top right tile already generated');
     }
 
     // left
     tileKey = (topLeftPoint.x-800) + ' ' + topLeftPoint.x + ' ' + topLeftPoint.y + ' ' + (topLeftPoint.y+600);
     if (realmTiles[tileKey] === undefined) {
       generateItems(tileKey);
-      console.log('left tile generated');
-    }
-    else {
-      console.log('left tile already generated');
     }
 
     // right
     tileKey = (topLeftPoint.x+800) + ' ' + (topLeftPoint.x+800+800) + ' ' + topLeftPoint.y + ' ' + (topLeftPoint.y+600);
     if (realmTiles[tileKey] === undefined) {
       generateItems(tileKey);
-      console.log('right tile generated');
-    }
-    else {
-      console.log('right tile already generated');
     }
 
     // bottom center
     tileKey = topLeftPoint.x + ' ' + (topLeftPoint.x+800) + ' ' + (topLeftPoint.y+600) + ' ' + (topLeftPoint.y+600+600);
     if (realmTiles[tileKey] === undefined) {
       generateItems(tileKey);
-      console.log('bottom center tile generated');
-    }
-    else {
-      console.log('bottom center tile already generated');
     }
 
     // bottom left
     tileKey = (topLeftPoint.x-800) + ' ' + topLeftPoint.x + ' ' + (topLeftPoint.y+600) + ' ' + (topLeftPoint.y+600+600);
     if (realmTiles[tileKey] === undefined) {
       generateItems(tileKey);
-      console.log('bottom left tile generated');
-    }
-    else {
-      console.log('bottom left tile already generated');
     }
 
     // bottom right
     tileKey = (topLeftPoint.x+800) + ' ' + (topLeftPoint.x+800+800) + ' ' + (topLeftPoint.y+600) + ' ' + (topLeftPoint.y+600+600);
     if (realmTiles[tileKey] === undefined) {
       generateItems(tileKey);
-      console.log('bottom right tile generated');
-    }
-    else {
-      console.log('bottom right tile already generated');
     }
   }
 })();
