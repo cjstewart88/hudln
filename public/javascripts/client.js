@@ -24,7 +24,7 @@
     // my cords
     var myX = me.x;
     var myY = me.y;
-    console.log(myX, myY)
+
     // clear the canvas for redrawing
     realm.width   = realm.height = 0;
     realm.width   = 800;
@@ -38,7 +38,7 @@
 
     // draw all the client specific realm items
     $.each(realmTiles, function (key, tile) {
-      $.each(tile, function () {
+      $.each(tile.items, function () {
         itemX = (myX-this.itemX)*-1;
         itemY = (myY-this.itemY)*-1;
 
@@ -74,18 +74,20 @@
   });
 
   function pickupItem () {
-    $.each(realmItems, function () {
-      var dx    = this.itemX - (me.x + 400);
-      var dy    = this.itemY - (me.y + 300);
-      var dist  = Math.floor(Math.sqrt((dx * dx) + (dy * dy)));
+    $.each(realmTiles, function (key, tile) {
+      $.each(tile.items, function () {
+        var dx    = this.itemX - (me.x + 400);
+        var dy    = this.itemY - (me.y + 300);
+        var dist  = Math.floor(Math.sqrt((dx * dx) + (dy * dy)));
 
-      if (dist <= 20 || dist == 21) {
-        delete this.itemID;
-        delete this.itemX;
-        delete this.itemY;
-        me.resources += 1;
-        updateHud('resources-collected', me.resources);
-      }
+        if (dist <= 20 || dist == 21) {
+          delete this.itemID;
+          delete this.itemX;
+          delete this.itemY;
+          me.resources += 1;
+          updateHud('resources-collected', me.resources);
+        }
+      });
     });
 
     drawRealm();
@@ -93,63 +95,49 @@
 
   function clientMovement (direction) {
     if (direction == "left") {
-      me.x -= 10
+      me.x -= 10;
       me.spriteSY = 96;
     }
     else if (direction == "right") {
-      me.x += 10
+      me.x += 10;
       me.spriteSY = 32;
     }
     else if (direction == "up") {
-      me.y -= 10
+      me.y -= 10;
       me.spriteSY = 0;
     }
     else if (direction == "down") {
-      me.y += 10
+      me.y += 10;
       me.spriteSY = 64;
     }
 
     if (me.spriteSX + 23 <= 46) {
-      me.spriteSX += 24
+      me.spriteSX += 24;
     }
     else {
       me.spriteSX = 0;
     }
 
-    // if (me.x != 0 && (me.x*-1)/400 % 1 === 0) {
-    //   if (direction == 'left') {
-    //     realmItemGenerationDetails.minX -= 1600
-    //     realmItemGenerationDetails.maxX -= 1600
-    //   }
-    //   else if (direction == 'right') {
-    //     realmItemGenerationDetails.minX += 1600
-    //     realmItemGenerationDetails.maxX += 1600
-    //   }
-    //   generateItems();
-    // }
-    // else if (me.y != 0 && (me.y*-1)/500 % 1 === 0) {
-    //   if (direction == 'up') {
-    //     realmItemGenerationDetails.minY -= 1200
-    //     realmItemGenerationDetails.maxY -= 1200
-    //   }
-    //   else if (direction == 'down') {
-    //     realmItemGenerationDetails.minY += 600
-    //     realmItemGenerationDetails.maxY += 600
-    //   }
-    //   generateItems();
-    // }
+    if (me.x != 0 && (me.x*-1)/800 % 1 === 0) {
+      generateTiles();
+    }
+    else if (me.y != 0 && (me.y*-1)/600 % 1 === 0) {
+      generateTiles();
+    }
 
-    drawRealm()
+    drawRealm();
   }
 
   function generateItems (tileKey) {
-    realmItems[tileKey] = [];
+    realmTiles[tileKey] = {
+      items: []
+    };
 
     var minMax  = tileKey.split(' ');
     var color   = 'rgb(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')';
 
-    for (var i = 0; i < 100; i++) {
-      realmItems[tileKey].push({
+    for (var i = 0; i < 10; i++) {
+      realmTiles[tileKey].items.push({
         itemID:   i,
         itemX:    Math.floor(Math.random() * (parseInt(minMax[1]) - parseInt(minMax[0])) + parseInt(minMax[0])),
         itemY:    Math.floor(Math.random() * (parseInt(minMax[3]) - parseInt(minMax[2])) + parseInt(minMax[2])),
@@ -161,60 +149,99 @@
   function generateTiles () {
     var tileKey; // minX maxX minY max Y
 
+    var topLeftPoint = {
+      x: Math.floor(me.x/800)*800,
+      y: Math.floor(me.y/600)*600
+    };
+
     // center
-    tileKey = me.x + ' ' + (me.x+800) + ' ' + me.y + ' ' + (me.y+600);
-    if (realmItems[tileKey] === undefined) {
+    tileKey = topLeftPoint.x + ' ' + (topLeftPoint.x+800) + ' ' + topLeftPoint.y + ' ' + (topLeftPoint.y+600);
+    if (realmTiles[tileKey] === undefined) {
       generateItems(tileKey);
+      console.log('center tile generated');
+    }
+    else {
+      console.log('center tile already generated');
     }
 
     // top center
-    tileKey = me.x + ' ' + (me.x+800) + ' ' + (me.y-600) + ' ' + me.y;
-    if (realmItems[tileKey] === undefined) {
+    tileKey = topLeftPoint.x + ' ' + (topLeftPoint.x+800) + ' ' + (topLeftPoint.y-600) + ' ' + topLeftPoint.y;
+    if (realmTiles[tileKey] === undefined) {
       generateItems(tileKey);
+      console.log('top center tile generated');
+    }
+    else {
+      console.log('top center tile already generated');
     }
 
     // top left
-    tileKey = (me.x-800) + ' ' + me.x + ' ' + (me.y-600) + ' ' + me.y;
-    if (realmItems[tileKey] === undefined) {
+    tileKey = (topLeftPoint.x-800) + ' ' + topLeftPoint.x + ' ' + (topLeftPoint.y-600) + ' ' + topLeftPoint.y;
+    if (realmTiles[tileKey] === undefined) {
       generateItems(tileKey);
+      console.log('top left tile generated');
+    }
+    else {
+      console.log('top left tile already generated');
     }
 
     // top right
-    tileKey = (me.x+800) + ' ' + (me.x+800+800) + ' ' + (me.y-600) + ' ' + me.y;
-    if (realmItems[tileKey] === undefined) {
+    tileKey = (topLeftPoint.x+800) + ' ' + (topLeftPoint.x+800+800) + ' ' + (topLeftPoint.y-600) + ' ' + topLeftPoint.y;
+    if (realmTiles[tileKey] === undefined) {
       generateItems(tileKey);
+      console.log('top right tile generated');
+    }
+    else {
+      console.log('top right tile already generated');
     }
 
     // left
-    tileKey = (me.x-800) + ' ' + me.x + ' ' + me.y + ' ' + (me.y+600);
-    if (realmItems[tileKey] === undefined) {
+    tileKey = (topLeftPoint.x-800) + ' ' + topLeftPoint.x + ' ' + topLeftPoint.y + ' ' + (topLeftPoint.y+600);
+    if (realmTiles[tileKey] === undefined) {
       generateItems(tileKey);
+      console.log('left tile generated');
+    }
+    else {
+      console.log('left tile already generated');
     }
 
     // right
-    tileKey = (me.x+800) + ' ' + (me.x+800+800) + ' ' + me.y + ' ' + (me.y+600);
-    if (realmItems[tileKey] === undefined) {
+    tileKey = (topLeftPoint.x+800) + ' ' + (topLeftPoint.x+800+800) + ' ' + topLeftPoint.y + ' ' + (topLeftPoint.y+600);
+    if (realmTiles[tileKey] === undefined) {
       generateItems(tileKey);
+      console.log('right tile generated');
+    }
+    else {
+      console.log('right tile already generated');
     }
 
     // bottom center
-    tileKey = me.x + ' ' + (me.x+800) + ' ' + (me.y+600) + ' ' + (me.y+600+600);
-    if (realmItems[tileKey] === undefined) {
+    tileKey = topLeftPoint.x + ' ' + (topLeftPoint.x+800) + ' ' + (topLeftPoint.y+600) + ' ' + (topLeftPoint.y+600+600);
+    if (realmTiles[tileKey] === undefined) {
       generateItems(tileKey);
+      console.log('bottom center tile generated');
+    }
+    else {
+      console.log('bottom center tile already generated');
     }
 
     // bottom left
-    tileKey = (me.x-800) + ' ' + me.x + ' ' + (me.y+600) + ' ' + (me.y+600+600);
-    if (realmItems[tileKey] === undefined) {
+    tileKey = (topLeftPoint.x-800) + ' ' + topLeftPoint.x + ' ' + (topLeftPoint.y+600) + ' ' + (topLeftPoint.y+600+600);
+    if (realmTiles[tileKey] === undefined) {
       generateItems(tileKey);
+      console.log('bottom left tile generated');
+    }
+    else {
+      console.log('bottom left tile already generated');
     }
 
     // bottom right
-    tileKey = (me.x+800) + ' ' + (me.x+800+800) + ' ' + (me.y+600) + ' ' + (me.y+600+600);
-    if (realmItems[tileKey] === undefined) {
+    tileKey = (topLeftPoint.x+800) + ' ' + (topLeftPoint.x+800+800) + ' ' + (topLeftPoint.y+600) + ' ' + (topLeftPoint.y+600+600);
+    if (realmTiles[tileKey] === undefined) {
       generateItems(tileKey);
+      console.log('bottom right tile generated');
     }
-
-    console.log(realmItems)
+    else {
+      console.log('bottom right tile already generated');
+    }
   }
 })();
