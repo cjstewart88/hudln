@@ -10,11 +10,11 @@
     resources:  0
   };
 
-  var realmItems   = [];
+  var realmItems   = {};
   var realmItemGenerationDetails = {
-    maxX: -400,
+    maxX: 0,
     minX: 800,
-    maxY: -300,
+    maxY: 0,
     minY: 600,
     color: null
   }
@@ -44,12 +44,14 @@
     realmContext.fillRect((myX-0)*-1, (myY-0)*-1, 10, 10);
 
     // draw all the client specific realm items
-    $.each(realmItems, function (item) {
-      itemX = (myX-this.itemX)*-1;
-      itemY = (myY-this.itemY)*-1;
+    $.each(realmItems, function (key, items) {
+      $.each(items, function () {
+        itemX = (myX-this.itemX)*-1;
+        itemY = (myY-this.itemY)*-1;
 
-  		realmContext.fillStyle = this.color;
-  		realmContext.fillRect(itemX, itemY, 10, 10);
+        realmContext.fillStyle = this.color;
+        realmContext.fillRect(itemX, itemY, 10, 10);
+      });
     });
   }
 
@@ -121,30 +123,52 @@
       me.spriteSX = 0;
     }
 
-    if (me.x != 0 && (me.x*-1)/800 % 1 === 0) {
-      realmItemGenerationDetails.maxX -= 1200
-      realmItemGenerationDetails.minX -= 1200
+    if (me.x != 0 && (me.x*-1)/400 % 1 === 0) {
+      if (direction == 'left') {
+        realmItemGenerationDetails.minX -= 1600
+        realmItemGenerationDetails.maxX -= 1600
+      }
+      else if (direction == 'right') {
+        realmItemGenerationDetails.minX += 1600
+        realmItemGenerationDetails.maxX += 1600
+      }
       generateItems();
-      console.log('new items generated')
-      console.log(realmItemGenerationDetails)
     }
-    // else if (me.y != 0 && (me.y*-1)/400 % 1 === 0) {
-    //   console.log('new items between', 'x', me.x-400, 'y', me.y)
-    //   generateItems(me.x-400, me.y);
-    // }
+    else if (me.y != 0 && (me.y*-1)/500 % 1 === 0) {
+      if (direction == 'up') {
+        realmItemGenerationDetails.minY -= 1200
+        realmItemGenerationDetails.maxY -= 1200
+      }
+      else if (direction == 'down') {
+        realmItemGenerationDetails.minY += 600
+        realmItemGenerationDetails.maxY += 600
+      }
+      generateItems();
+    }
 
     drawRealm()
   }
 
   function generateItems () {
-    realmItemGenerationDetails.color = 'rgb(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')';
-    for (var i = 0; i < 500; i++) {
-      realmItems.push({
-        itemID:   i,
-        itemX:    Math.floor(Math.random() * (realmItemGenerationDetails.maxX - realmItemGenerationDetails.minX) + realmItemGenerationDetails.minX),
-        itemY:    Math.floor(Math.random() * (realmItemGenerationDetails.maxY - realmItemGenerationDetails.minY) + realmItemGenerationDetails.minY),
-        color:    realmItemGenerationDetails.color
-      })
+    var realmItemsKey = realmItemGenerationDetails.minX + " " + realmItemGenerationDetails.maxX + " " + realmItemGenerationDetails.minY + " " + realmItemGenerationDetails.maxY;
+    console.log(realmItemsKey)
+    if (realmItems[realmItemsKey] === undefined) {
+      console.log('new items generated', realmItemGenerationDetails)
+      realmItems[realmItemsKey] = []
+
+      realmItemGenerationDetails.color = 'rgb(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')';
+
+      for (var i = 0; i < 500; i++) {
+        realmItems[realmItemsKey].push({
+          itemID:   i,
+          itemX:    Math.floor(Math.random() * (realmItemGenerationDetails.maxX - realmItemGenerationDetails.minX) + realmItemGenerationDetails.minX),
+          itemY:    Math.floor(Math.random() * (realmItemGenerationDetails.maxY - realmItemGenerationDetails.minY) + realmItemGenerationDetails.minY),
+          color:    realmItemGenerationDetails.color
+        })
+      }
+    }
+    else {
+      console.log('area already has items!!!');
     }
   }
 })();
