@@ -10,15 +10,8 @@
     resources:  0
   };
 
-  var realmItems   = {};
-  var realmItemGenerationDetails = {
-    maxX: 0,
-    minX: 800,
-    maxY: 0,
-    minY: 600,
-    color: null
-  }
-  generateItems();
+  var realmTiles = {};
+  generateTiles();
 
   var character = new Image();
   character.src = "images/char3.png";
@@ -44,8 +37,8 @@
     realmContext.fillRect((myX-0)*-1, (myY-0)*-1, 10, 10);
 
     // draw all the client specific realm items
-    $.each(realmItems, function (key, items) {
-      $.each(items, function () {
+    $.each(realmTiles, function (key, tile) {
+      $.each(tile, function () {
         itemX = (myX-this.itemX)*-1;
         itemY = (myY-this.itemY)*-1;
 
@@ -123,52 +116,105 @@
       me.spriteSX = 0;
     }
 
-    if (me.x != 0 && (me.x*-1)/400 % 1 === 0) {
-      if (direction == 'left') {
-        realmItemGenerationDetails.minX -= 1600
-        realmItemGenerationDetails.maxX -= 1600
-      }
-      else if (direction == 'right') {
-        realmItemGenerationDetails.minX += 1600
-        realmItemGenerationDetails.maxX += 1600
-      }
-      generateItems();
-    }
-    else if (me.y != 0 && (me.y*-1)/500 % 1 === 0) {
-      if (direction == 'up') {
-        realmItemGenerationDetails.minY -= 1200
-        realmItemGenerationDetails.maxY -= 1200
-      }
-      else if (direction == 'down') {
-        realmItemGenerationDetails.minY += 600
-        realmItemGenerationDetails.maxY += 600
-      }
-      generateItems();
-    }
+    // if (me.x != 0 && (me.x*-1)/400 % 1 === 0) {
+    //   if (direction == 'left') {
+    //     realmItemGenerationDetails.minX -= 1600
+    //     realmItemGenerationDetails.maxX -= 1600
+    //   }
+    //   else if (direction == 'right') {
+    //     realmItemGenerationDetails.minX += 1600
+    //     realmItemGenerationDetails.maxX += 1600
+    //   }
+    //   generateItems();
+    // }
+    // else if (me.y != 0 && (me.y*-1)/500 % 1 === 0) {
+    //   if (direction == 'up') {
+    //     realmItemGenerationDetails.minY -= 1200
+    //     realmItemGenerationDetails.maxY -= 1200
+    //   }
+    //   else if (direction == 'down') {
+    //     realmItemGenerationDetails.minY += 600
+    //     realmItemGenerationDetails.maxY += 600
+    //   }
+    //   generateItems();
+    // }
 
     drawRealm()
   }
 
-  function generateItems () {
-    var realmItemsKey = realmItemGenerationDetails.minX + " " + realmItemGenerationDetails.maxX + " " + realmItemGenerationDetails.minY + " " + realmItemGenerationDetails.maxY;
-    console.log(realmItemsKey)
-    if (realmItems[realmItemsKey] === undefined) {
-      console.log('new items generated', realmItemGenerationDetails)
-      realmItems[realmItemsKey] = []
+  function generateItems (tileKey) {
+    realmItems[tileKey] = [];
 
-      realmItemGenerationDetails.color = 'rgb(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')';
+    var minMax  = tileKey.split(' ');
+    var color   = 'rgb(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')';
 
-      for (var i = 0; i < 500; i++) {
-        realmItems[realmItemsKey].push({
-          itemID:   i,
-          itemX:    Math.floor(Math.random() * (realmItemGenerationDetails.maxX - realmItemGenerationDetails.minX) + realmItemGenerationDetails.minX),
-          itemY:    Math.floor(Math.random() * (realmItemGenerationDetails.maxY - realmItemGenerationDetails.minY) + realmItemGenerationDetails.minY),
-          color:    realmItemGenerationDetails.color
-        })
-      }
+    for (var i = 0; i < 100; i++) {
+      realmItems[tileKey].push({
+        itemID:   i,
+        itemX:    Math.floor(Math.random() * (parseInt(minMax[1]) - parseInt(minMax[0])) + parseInt(minMax[0])),
+        itemY:    Math.floor(Math.random() * (parseInt(minMax[3]) - parseInt(minMax[2])) + parseInt(minMax[2])),
+        color:    color
+      });
     }
-    else {
-      console.log('area already has items!!!');
+  }
+
+  function generateTiles () {
+    var tileKey; // minX maxX minY max Y
+
+    // center
+    tileKey = me.x + ' ' + (me.x+800) + ' ' + me.y + ' ' + (me.y+600);
+    if (realmItems[tileKey] === undefined) {
+      generateItems(tileKey);
     }
+
+    // top center
+    tileKey = me.x + ' ' + (me.x+800) + ' ' + (me.y-600) + ' ' + me.y;
+    if (realmItems[tileKey] === undefined) {
+      generateItems(tileKey);
+    }
+
+    // top left
+    tileKey = (me.x-800) + ' ' + me.x + ' ' + (me.y-600) + ' ' + me.y;
+    if (realmItems[tileKey] === undefined) {
+      generateItems(tileKey);
+    }
+
+    // top right
+    tileKey = (me.x+800) + ' ' + (me.x+800+800) + ' ' + (me.y-600) + ' ' + me.y;
+    if (realmItems[tileKey] === undefined) {
+      generateItems(tileKey);
+    }
+
+    // left
+    tileKey = (me.x-800) + ' ' + me.x + ' ' + me.y + ' ' + (me.y+600);
+    if (realmItems[tileKey] === undefined) {
+      generateItems(tileKey);
+    }
+
+    // right
+    tileKey = (me.x+800) + ' ' + (me.x+800+800) + ' ' + me.y + ' ' + (me.y+600);
+    if (realmItems[tileKey] === undefined) {
+      generateItems(tileKey);
+    }
+
+    // bottom center
+    tileKey = me.x + ' ' + (me.x+800) + ' ' + (me.y+600) + ' ' + (me.y+600+600);
+    if (realmItems[tileKey] === undefined) {
+      generateItems(tileKey);
+    }
+
+    // bottom left
+    tileKey = (me.x-800) + ' ' + me.x + ' ' + (me.y+600) + ' ' + (me.y+600+600);
+    if (realmItems[tileKey] === undefined) {
+      generateItems(tileKey);
+    }
+
+    // bottom right
+    tileKey = (me.x+800) + ' ' + (me.x+800+800) + ' ' + (me.y+600) + ' ' + (me.y+600+600);
+    if (realmItems[tileKey] === undefined) {
+      generateItems(tileKey);
+    }
+
+    console.log(realmItems)
   }
 })();
