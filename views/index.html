@@ -2,22 +2,24 @@
 <html>
   <head>
     <title>hudln</title>
-    <script src='/javascripts/jquery-1.8.2.min.js' type='text/javascript'></script>
-    <script src='/javascripts/realm.js' type='text/javascript'></script>
-    <script src='/javascripts/character.js' type='text/javascript'></script>
     <link href='/stylesheets/style.css' media='screen' rel='stylesheet' type='text/css'/>
+    <script src='/javascripts/jquery-2.0.3.min.js' type='text/javascript'></script>
+    <script src='/javascripts/engine.js'    type='text/javascript'></script>
+    <script src='/javascripts/assets.js'    type='text/javascript'></script>
+    <script src='/javascripts/realm.js'     type='text/javascript'></script>
+    <script src='/javascripts/character.js' type='text/javascript'></script>
   </head>
   <body>
     <div id="main">
       <canvas id="realm"></canvas>
       <script>
         $(document).ready(function () {
-          Realm.init();
+          Engine.init();
         });
       </script>
       
       <div id="hud">
-        Resources Collected: <span id="resources-collected"></span>
+        Resources Collected: <span id="resources-collected">0</span>
       </div>
     </div>
   </body>
