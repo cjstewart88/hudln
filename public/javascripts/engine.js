@@ -25,12 +25,16 @@ var Engine = {
     Engine.canvas.width   = 800;
     Engine.canvas.height  = 600;
 
+    Engine.drawBounderies();
     Engine.drawClient();
-    Engine.drawSurroundingObjects();
+    Engine.drawResourceNodes();
+  },
 
-    // draw a random black square at 0,0 every time
-    Engine.canvasContext.fillStyle = 'rgb(0, 0, 0)';
-    Engine.canvasContext.fillRect((Character.x-0)*-1, (Character.y-0)*-1, 10, 10);
+  drawBounderies: function () {
+    if      (Character.y < 300)  Engine.canvasContext.fillRect(0 , 0, 800, 300-Character.y)    
+    else if (Character.y > 1600) Engine.canvasContext.fillRect(0, 2320-Character.y, 800, 300);
+    if      (Character.x < 400)  Engine.canvasContext.fillRect(0, 0, 400-Character.x, 600);
+    else if (Character.x > 1600) Engine.canvasContext.fillRect(2420-Character.x, 0, 400, 600);
   },
 
   // draw yourself ... always in the center
@@ -38,10 +42,10 @@ var Engine = {
     Engine.canvasContext.drawImage(Assets.images.client, Character.spriteSX, Character.spriteSY, 25, 32, Math.floor(Engine.canvas.width/2), Math.floor(Engine.canvas.height/2), 24, 32);
   },
 
-  drawSurroundingObjects: function () {
-    $.each(Realm.objects, function (i, object) {
-      itemX = (Character.x-object.x)*-1;
-      itemY = (Character.y-object.y)*-1;
+  drawResourceNodes: function () {
+    $.each(Realm.resourceNodes, function (i, resourceNode) {
+      itemX = (Character.x-resourceNode.properties.x-400)*-1;
+      itemY = (Character.y-resourceNode.properties.y-300)*-1;
 
       Engine.canvasContext.fillStyle = 'rgb(66, 219, 212)';
       Engine.canvasContext.fillRect(itemX, itemY, 10, 10);
@@ -54,16 +58,16 @@ var Engine = {
 
       if (key == 32) {
         e.preventDefault();
-        Character.pickupItem();
+        Character.gatherResources();
       }
       else if (key == 37 || key == 39 || key == 38 || key == 40) {
         e.preventDefault();
 
         var direction;
-        if      (key == 37) { direction = "left";   }
-        else if (key == 39) { direction = "right";  }
-        else if (key == 38) { direction = "up";     }
-        else if (key == 40) { direction = "down";   }
+        if      (key == 37) { direction = "left";  }
+        else if (key == 39) { direction = "right"; }
+        else if (key == 38) { direction = "up";    }
+        else if (key == 40) { direction = "down";  }
 
         Character.move(direction);
       }

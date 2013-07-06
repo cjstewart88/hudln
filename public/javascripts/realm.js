@@ -1,21 +1,23 @@
 var Realm = {
 
-  objects: [{ x: 90, y: 50 }, { x: 90, y: 500 }, { x: 380, y: 50 }, { x: 180, y: 120 }],
+  resourceNodes: [],
 
-  // setup a timer to checkSurroundings
   init: function () {
+    Realm.generateResources();
 
+    setInterval(function () {
+      Realm.generateResources();
+    }, 10000);
   },
 
-  // loops through all objects within players view and 
-  // calls generateObjects if object count is below the threshold
-  // { logs: 20, rabbits: 3, players: 14 }
-  checkSurroundings: function () {
-
-  },
- 
-  generateObjects: function () {
-
+  generateResources: function () {
+    if (Realm.resourceNodes.length < 100) {
+      var numberOfResourceNodesToGenerate = 100 - Realm.resourceNodes.length;
+      console.log(Realm.resourceNodes.length + ' / 100 items ... generating ' + numberOfResourceNodesToGenerate +' items');
+      for (var i = 0; i < numberOfResourceNodesToGenerate; i++) {
+        Realm.resourceNodes.push(new ResourceNode());
+      }
+    }
   }
   
 };

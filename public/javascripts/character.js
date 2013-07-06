@@ -15,21 +15,24 @@ var Character = {
   },
 
   move: function (direction) {
-    if (direction == "left") {
+    if (direction == "left" && Character.x - 10 >= 0 && Character.x != 0) {
       Character.x -= 10;
       Character.spriteSY = 96;
     }
-    else if (direction == "right") {
+    else if (direction == "right" && Character.x + 10 <= 2000 && Character.x != 2000) {
       Character.x += 10;
       Character.spriteSY = 32;
     }
-    else if (direction == "up") {
+    else if (direction == "up" && Character.y - 10 >= 0 && Character.y != 0) {
       Character.y -= 10;
       Character.spriteSY = 0;
     }
-    else if (direction == "down") {
+    else if (direction == "down" && Character.y + 10 <= 2000 && Character.y != 2000) {
       Character.y += 10;
       Character.spriteSY = 64;
+    }
+    else {
+      return;
     }
 
     if (Character.spriteSX + 23 <= 46) {
@@ -40,18 +43,20 @@ var Character = {
     }
   },
 
-  pickupItem: function () {
-    $.each(Realm.objects, function (i, object) {
-      var dx    = this.x - (Character.x + 400);
-      var dy    = this.y - (Character.y + 300);
+  gatherResources: function () {
+    for (var i = 0; Realm.resourceNodes.length > i; i++) {
+      var resourceNode = Realm.resourceNodes[i];
+
+      var dx    = resourceNode.properties.x - (Character.x + 5);
+      var dy    = resourceNode.properties.y - (Character.y + 5);
       var dist  = Math.floor(Math.sqrt((dx * dx) + (dy * dy)));
 
       if (dist <= 20 || dist == 21) {
-        Realm.objects.splice(i, 1);
-        Character.resources += 1;
+        Character.resources += resourceNode.properties.value;
         Character.updateHud('resources-collected', Character.resources);
+        Realm.resourceNodes.splice(i, 1);
       }
-    });
+    }
   },
 
   updateHud: function (to_update, value) {
