@@ -39,7 +39,7 @@ var Engine = {
 
   // draw yourself ... always in the center
   drawClient: function () {
-    Engine.canvasContext.drawImage(Assets.images.client, Character.spriteSX, Character.spriteSY, 25, 32, Math.floor(Engine.canvas.width/2), Math.floor(Engine.canvas.height/2), 24, 32);
+    Engine.canvasContext.drawImage(Assets.images.client, Character.spriteSX, Character.spriteSY, 16, 19, Math.floor(Engine.canvas.width/2), Math.floor(Engine.canvas.height/2), 16, 19);
   },
 
   drawResourceNodes: function () {
@@ -70,6 +70,12 @@ var Engine = {
         else if (key == 40) { direction = "down";  }
 
         Character.move(direction);
+      }
+    }).keyup(function (e) {
+      var key = e.keyCode;
+
+      if (key == 37 || key == 39 || key == 38 || key == 40) {
+        Character.counter = 0;
       }
     });
   }

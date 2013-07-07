@@ -1,7 +1,7 @@
 var Assets = {
 
   sources: [
-    { key: 'client', value: 'images/char3.png' }
+    { key: 'client', value: 'images/character-sprite.jpg' }
   ],
 
   images: [],

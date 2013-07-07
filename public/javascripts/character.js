@@ -4,39 +4,45 @@ var Character = {
 
   y:          0,
 
-  spriteSX:   23,
+  spriteSX:   0,
 
-  spriteSY:   64,
+  spriteSY:   12,
 
   resources:  0,
+
+  counter: 2,
 
   init: function () {
 
   },
 
   move: function (direction) {
+    if (--Character.counter > 0) { return; };
+
     if (direction == "left" && Character.x - 10 >= 0 && Character.x != 0) {
       Character.x -= 10;
-      Character.spriteSY = 96;
+      Character.spriteSY = 44;
     }
     else if (direction == "right" && Character.x + 10 <= 2000 && Character.x != 2000) {
       Character.x += 10;
-      Character.spriteSY = 32;
+      Character.spriteSY = 76;
     }
     else if (direction == "up" && Character.y - 10 >= 0 && Character.y != 0) {
       Character.y -= 10;
-      Character.spriteSY = 0;
+      Character.spriteSY = 108;
     }
     else if (direction == "down" && Character.y + 10 <= 2000 && Character.y != 2000) {
       Character.y += 10;
-      Character.spriteSY = 64;
+      Character.spriteSY = 12;
     }
     else {
       return;
     }
+    
+    Character.counter = 2;
 
-    if (Character.spriteSX + 23 <= 46) {
-      Character.spriteSX += 24;
+    if (Character.spriteSX + 16 <= 48) {
+      Character.spriteSX += 16;
     }
     else {
       Character.spriteSX = 0;
